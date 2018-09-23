@@ -6,9 +6,13 @@ public class HazardingPlayer extends Player {
 
     public Domino getNextStone() {
         List<Domino> dominoes=getDominoes();
-        Random rand = new Random();
-        rand.setSeed(System.nanoTime());
-        return dominoes.get(rand.nextInt(dominoes.size()));
+        if(dominoes!=null) {
+            Random rand = new Random();
+            rand.setSeed(System.nanoTime());
+            return dominoes.get(rand.nextInt(dominoes.size()));
+        }else{
+            return null;
+        }
     }
 
 }
