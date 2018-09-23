@@ -1,0 +1,2 @@
+public class DominoGame {
+}
