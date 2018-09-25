@@ -4,6 +4,9 @@ import java.util.Random;
 
 public class HazardingPlayer extends Player {
 
+    public HazardingPlayer(HazardingPlayer p){
+        super(p);
+    }
     public Domino getNextStone() {
         List<Domino> dominoes=getDominoes();
         if(dominoes!=null) {
@@ -15,4 +18,5 @@ public class HazardingPlayer extends Player {
         }
     }
 
+    public HazardingPlayer copy(){return new HazardingPlayer(this);}
 }
