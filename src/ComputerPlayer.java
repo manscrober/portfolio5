@@ -1,9 +1,13 @@
+import java.util.List;
+
 public class ComputerPlayer extends Player {
-    public ComputerPlayer(ComputerPlayer p){
-        super(p);
+    public ComputerPlayer(String name){
+        super(name);
     }
     public Domino getNextStone(){
-        return getDominoes().get(0);
+        Domino returnDomino = peekDominoes().get(0);
+        removeDomino(0);
+        System.out.println(super.getName() + ": " + returnDomino);
+        return returnDomino;
     }
-    public ComputerPlayer copy(){return new ComputerPlayer(this);}
 }

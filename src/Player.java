@@ -4,19 +4,30 @@ import java.util.List;
 
 public abstract class Player {
     private List<Domino> dominoes = new ArrayList<>();
-    public Player(Player p){
-        this.dominoes=p.dominoes;//TODO why exactly are we doing it this way? why not just copy dominoes to a new player
-                                //or even instantiate using the dominoes?
+    private String name;
+    public Player(String name){
+        this.name=name;
+    }
+    public String getName(){
+        return name;
     }
     public void setDominoes(List<Domino> dominoes){
         this.dominoes=dominoes;
     }
-    public List<Domino> getDominoes(){
-        return this.dominoes;
+    protected List<Domino> peekDominoes(){
+        return Collections.unmodifiableList(dominoes);
+    }
+    protected void removeDomino(int index){
+        dominoes.remove(index);
     }
     public void addDomino(Domino domino){
         dominoes.add(domino);
     }
     public abstract Domino getNextStone();
-    public abstract Player copy();
+    public boolean isOutOfDominoes(){
+        return dominoes.size()<1;
+    }
+    public String getDominoString(){
+        return "[" +peekDominoes().stream().map(d->d.toString()).reduce((s1,s2)->s1+s2).orElseGet(String::new) + "]";
+    }
 }

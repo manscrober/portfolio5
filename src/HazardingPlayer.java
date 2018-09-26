@@ -4,19 +4,19 @@ import java.util.Random;
 
 public class HazardingPlayer extends Player {
 
-    public HazardingPlayer(HazardingPlayer p){
-        super(p);
+    public HazardingPlayer(String name){
+        super(name);
     }
     public Domino getNextStone() {
-        List<Domino> dominoes=getDominoes();
-        if(dominoes!=null) {
+        if(peekDominoes()!=null) {
             Random rand = new Random();
             rand.setSeed(System.nanoTime());
-            return dominoes.get(rand.nextInt(dominoes.size()));
+            int indexOfReturnDomino = rand.nextInt(peekDominoes().size());
+            Domino returnDomino=peekDominoes().get(indexOfReturnDomino);
+            removeDomino(indexOfReturnDomino);
+            return returnDomino;
         }else{
             return null;
         }
     }
-
-    public HazardingPlayer copy(){return new HazardingPlayer(this);}
 }
