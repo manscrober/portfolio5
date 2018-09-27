@@ -20,10 +20,18 @@ public abstract class Player {
     protected void removeDomino(int index){
         dominoes.remove(index);
     }
+    protected List<Domino> getStonesThatFit(Domino gameStone){
+        ArrayList<Domino> returnArrayList = new ArrayList<>();
+        dominoes.stream()
+                .filter(d->d.getLeft()==gameStone.getRight()||d.getRight()==gameStone.getLeft())
+                .forEach(d->returnArrayList.add(d));
+        return returnArrayList;
+    }
+    public abstract Sides getSideToAddTo(Domino toAdd, Domino gameStone);
     public void addDomino(Domino domino){
         dominoes.add(domino);
     }
-    public abstract Domino getNextStone();
+    public abstract Domino getNextStone(Domino gameStone);
     public boolean isOutOfDominoes(){
         return dominoes.size()<1;
     }

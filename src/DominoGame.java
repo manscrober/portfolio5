@@ -10,6 +10,7 @@ public class DominoGame {
     int player1Score,player2Score;
     DominoHeap dominoHeap;
     DominoPool dominoPool;
+    int playersStalling=0;
     public DominoGame(Player player1, Player player2){
         this.player1=player1;
         this.player2=player2;
@@ -22,22 +23,19 @@ public class DominoGame {
             player2.setDominoes(dominoHeap.pickDominoes(NUMBER_OF_STONES_PER_PLAYER));
             gameStone = dominoHeap.pickDominoes(1).get(0);
         }
-        while(!player1.isOutOfDominoes()&&!player2.isOutOfDominoes()){
+        while(playersStalling<=2&&!player1.isOutOfDominoes()&&!player2.isOutOfDominoes()){
             if(!player1.isOutOfDominoes()) {
                 playRound(player1);
             }
             if(player1.isOutOfDominoes()){
                 player1Score++;
                 finishGame();
-                break;
-            }
-            if(!player2.isOutOfDominoes()) {
+            }else if(!player2.isOutOfDominoes()) {
                 playRound(player2);
             }
             if(player2.isOutOfDominoes()){
                 player2Score++;
                 finishGame();
-                break;
             }
         }
     }
@@ -45,7 +43,22 @@ public class DominoGame {
 
     private void playRound(Player player){
         System.out.println("Anlegemöglickeit:"+gameStone);
-        player.getNextStone();
+        Domino addedDomino = player.getNextStone(gameStone);
+        if(addedDomino==null){
+            if(dominoHeap.getSize()>0) {
+                System.out.println("Keine Anlegemöglichkeit");
+                player.addDomino(dominoHeap.pickDominoes(1).get(0));
+            }else{
+                playersStalling++;
+            }
+        }else {
+            Sides sideToAddTo = player.getSideToAddTo(addedDomino,gameStone);
+            if (sideToAddTo==Sides.right) {
+                gameStone.setRight(addedDomino.getRight());
+            } else if (sideToAddTo==Sides.left) {
+                gameStone.setLeft(addedDomino.getLeft());
+            }
+        }
     }
     private void finishGame(){
         UserDialog userDialog = new UserDialog();
