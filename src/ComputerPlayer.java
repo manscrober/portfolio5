@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class ComputerPlayer extends Player {
@@ -15,10 +16,16 @@ public class ComputerPlayer extends Player {
         }
     }
     public Sides getSideToAddTo(Domino toAdd,Domino gameStone){
+        List<Sides> possibleSides = new ArrayList<>();
         if (toAdd.getLeft() == gameStone.getRight()) {
-            return Sides.right;
-        } else {
-            return Sides.left;
+            possibleSides.add(Sides.right);
         }
+        if (toAdd.getRight() == gameStone.getLeft()) {
+            possibleSides.add(Sides.left);
+        }
+        if(possibleSides.size()>1) {
+            System.out.println(getName() + ": " + possibleSides.get(0));
+        }
+        return possibleSides.get(0);
     }
 }

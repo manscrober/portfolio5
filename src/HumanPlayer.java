@@ -16,7 +16,7 @@ public class HumanPlayer extends Player {
             System.out.println("Ihre Steine: " + getDominoString());
             int choice = dialog.getUserInput("Auswahlmöglichkeiten", selectableDominoStrings);
             Domino returnDomino = selectableDominoes.get(choice);
-            removeDomino(choice);
+            removeDomino(peekDominoes().indexOf(returnDomino));
             return returnDomino;
         }else{
             return null;

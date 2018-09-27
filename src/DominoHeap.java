@@ -8,7 +8,7 @@ public class DominoHeap {
         this.dominoes=dominoes;
     }
     public List<Domino> pickDominoes(int numberOfDominoes){
-        if(numberOfDominoes<dominoes.size()) {
+        if(numberOfDominoes<=dominoes.size()) {
             List<Domino> dominoesToReturn = new ArrayList<>(dominoes.subList(0, numberOfDominoes));
             dominoes.removeAll(dominoesToReturn);
             return dominoesToReturn;

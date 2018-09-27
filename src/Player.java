@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class Player {
+    //TODO more protected, less public?
     private List<Domino> dominoes = new ArrayList<>();
     private String name;
     public Player(String name){

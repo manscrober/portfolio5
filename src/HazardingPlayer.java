@@ -13,6 +13,7 @@ public class HazardingPlayer extends Player {
             Random rand = new Random();
             rand.setSeed(System.nanoTime());
             Domino returnDomino = selectableDominoes.get(rand.nextInt(selectableDominoes.size()));
+            System.out.println(getName() + ": " + returnDomino);
             removeDomino(peekDominoes().indexOf(returnDomino));
             return returnDomino;
         }else{
@@ -27,8 +28,13 @@ public class HazardingPlayer extends Player {
         if (toAdd.getRight() == gameStone.getLeft()) {
             possibleSides.add(Sides.left);
         }
+
         Random rand = new Random();
         rand.setSeed(System.nanoTime());
-        return possibleSides.get(rand.nextInt(possibleSides.size()));
+        Sides returnSide= possibleSides.get(rand.nextInt(possibleSides.size()));
+        if(possibleSides.size()>1) {
+            System.out.println(getName() + ": " + possibleSides.get(0));
+        }
+        return returnSide;
     }
 }
