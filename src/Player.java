@@ -28,6 +28,18 @@ public abstract class Player {
                 .forEach(d->returnArrayList.add(d));
         return returnArrayList;
     }
+    protected Domino selectDomino(List<Domino> selectableDominoes,int index){
+        Domino returnDomino=null;
+        if(!selectableDominoes.isEmpty()&&index>=0) {
+            if(index<selectableDominoes.size()) {
+                returnDomino = selectableDominoes.get(index);
+                removeDomino(dominoes.indexOf(returnDomino));
+            }
+        }else {
+            System.out.println("Keine Anlegemöglichkeit");
+        }
+        return returnDomino;
+    }
     public abstract Sides getSideToAddTo(Domino toAdd, Domino gameStone);
     public void addDomino(Domino domino){
         dominoes.add(domino);

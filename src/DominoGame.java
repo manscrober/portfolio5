@@ -1,44 +1,44 @@
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DominoGame {
-    public static final int NUMBER_OF_STONES_PER_PLAYER = 5;
-    Domino gameStone;
-    Player player1,player2;
-    int player1Score,player2Score;
-    DominoHeap dominoHeap;
-    DominoPool dominoPool;
-    int playersStalling=0;
-    public DominoGame(Player player1, Player player2){//TODO two OR MORE players. always 5 stones per player
-        //TODO more players with generic parameters/varargs (Player... players)
-        //TODO players can choose not to take a stone instead of laying one
-        this.player1=player1;
-        this.player2=player2;
+    private static final int NUMBER_OF_STONES_PER_PLAYER = 5;
+    private Domino gameStone;
+    private Player[] players;
+    private int[] playerScores;
+    private DominoHeap dominoHeap;
+    private DominoPool dominoPool;
+    private int playersStalling=0;
+    public DominoGame(Player... players){
+        this.players=players;
+        playerScores=new int[players.length];
+
         dominoPool = new DominoPool();
     }
     public void start(){
         dominoHeap = new DominoHeap(dominoPool.provideShuffledDominoHeap());
-        if(dominoHeap.getSize()>NUMBER_OF_STONES_PER_PLAYER) {
-            player1.setDominoes(dominoHeap.pickDominoes(NUMBER_OF_STONES_PER_PLAYER));
-            player2.setDominoes(dominoHeap.pickDominoes(NUMBER_OF_STONES_PER_PLAYER));
+        if(dominoHeap.getSize()>NUMBER_OF_STONES_PER_PLAYER*players.length) {
+            Stream.of(players).forEach(p -> p.setDominoes(dominoHeap.pickDominoes(NUMBER_OF_STONES_PER_PLAYER)));
             gameStone = dominoHeap.pickDominoes(1).get(0);
+
+            boolean someoneWon=false;
+            while (playersStalling <= players.length && !someoneWon) {
+
+                for(int i=0;i<players.length&&!someoneWon;i++) {
+                    if (!players[i].isOutOfDominoes()) {
+                        playRound(players[i]);
+                    }
+                    if (players[i].isOutOfDominoes()) {
+
+                        someoneWon=true;
+                    }
+                }
+            }
+            calculatePlayerScores();
+            finishGame();
         }
-        while(playersStalling<=2&&!player1.isOutOfDominoes()&&!player2.isOutOfDominoes()){
-            if(!player1.isOutOfDominoes()) {
-                playRound(player1);
-            }
-            if(player1.isOutOfDominoes()){
-                player1Score++;
-            }else if(!player2.isOutOfDominoes()) {
-                playRound(player2);
-            }
-            if(player2.isOutOfDominoes()){
-                player2Score++;
-            }
-        }
-        finishGame();
     }
 
 
@@ -46,9 +46,7 @@ public class DominoGame {
         System.out.println("Anlegemöglickeit:"+gameStone);
         Domino addedDomino = player.getNextStone(gameStone);
         if(addedDomino==null){
-            System.out.println("Keine Anlegemöglichkeit");
             if(dominoHeap.getSize()>0) {
-
                 player.addDomino(dominoHeap.pickDominoes(1).get(0));
             }else{
                 playersStalling++;
@@ -63,13 +61,27 @@ public class DominoGame {
             }
         }
     }
+    private void calculatePlayerScores(){
+        for(int i=0;i<players.length;i++){
+            playerScores[i]+=players[i].peekDominoes().stream()
+                                        .map(d->d.getLeft()+d.getRight())
+                                        .reduce((d1,d2)->d1+d2)
+                                        .orElse(0);
+        }
+    }
     private void finishGame(){
-        //TODO determine and change scores by counting stones in the end of the game(see specification)
         UserDialog userDialog = new UserDialog();
         System.out.println("Spielende");
-        System.out.println(player1.getName() + ": " + player1.getDominoString());
-        System.out.println(player2.getName() + ": " + player2.getDominoString());
-        System.out.println(player1.getName() + "-" + player2.getName()+ " "+ player1Score+":"+player2Score);
+        Stream.of(players).forEach(p->System.out.println(p.getName()+": "+p.getDominoString()));
+        String playerNames = Stream.of(players)
+                                    .map(p->p.getName())
+                                    .reduce((s1,s2)->s1 +"-" +s2)
+                                    .orElse("");
+
+        String playerScoresString = Arrays.stream(playerScores)
+                                            .mapToObj(i->Integer.toString(i))
+                                            .reduce((s1,s2)->s1+":"+s2).orElse("");
+        System.out.println(playerNames+ " "+ playerScoresString);
         int anotherRound =  userDialog.getUserInput("Weitere Runde?", "Nein","Ja");
         if(anotherRound==1){
             start();

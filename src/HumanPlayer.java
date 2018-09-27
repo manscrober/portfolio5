@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HumanPlayer extends Player {
     public HumanPlayer(String name){
@@ -8,19 +9,29 @@ public class HumanPlayer extends Player {
     }
 
     public Domino getNextStone(Domino gameStone){
-        if(!getStonesThatFit(gameStone).isEmpty()) {
+        List<Domino> selectableDominoes = getStonesThatFit(gameStone);
+        int userChoice=getUserChoice(selectableDominoes);
+
+        Domino returnDomino = selectDomino(selectableDominoes,userChoice);
+        return  returnDomino;
+    }
+
+    private int getUserChoice(List<Domino> selectableDominoes){
+        int choice;
+        if(selectableDominoes.size()>0) {
             UserDialog dialog = new UserDialog();
-            List<Domino> selectableDominoes = getStonesThatFit(gameStone);
-            String[] selectableDominoStrings = selectableDominoes.stream().map(d -> d.toString()).toArray(String[]::new);
+            List<String> selectableDominoStrings = selectableDominoes.stream()
+                    .map(d -> d.toString())
+                    .collect(Collectors.toList());
+            selectableDominoStrings.add("ziehen");
+            String[] selectableDominoArray = selectableDominoStrings.toArray(new String[selectableDominoStrings.size()]);
 
             System.out.println("Ihre Steine: " + getDominoString());
-            int choice = dialog.getUserInput("Auswahlmöglichkeiten", selectableDominoStrings);
-            Domino returnDomino = selectableDominoes.get(choice);
-            removeDomino(peekDominoes().indexOf(returnDomino));
-            return returnDomino;
+             choice = dialog.getUserInput("Auswahlmöglichkeiten: ", selectableDominoArray);
         }else{
-            return null;
+            choice=0;
         }
+        return choice;
     }
 
     public Sides getSideToAddTo(Domino toAdd, Domino gameStone){

@@ -1,5 +1,3 @@
-import org.junit.runner.Computer;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +16,35 @@ public class Test {
     }
     @org.junit.Test
     public void testComVsCom(){
-        HazardingPlayer h1 =new HazardingPlayer("haz1");
-        HazardingPlayer h2 = new HazardingPlayer("haz2");
+        ComputerPlayer h1 =new ComputerPlayer("COM1");
+        ComputerPlayer h2 = new ComputerPlayer("COM2");
         DominoGame dg = new DominoGame(h1,h2);
         dg.start();
     }
+    @org.junit.Test
+    public void testHazVsHaz(){
+        HazardingPlayer h1 =new HazardingPlayer("COM1");
+        HazardingPlayer h2 = new HazardingPlayer("COM2");
+        DominoGame dg = new DominoGame(h1,h2);
+        dg.start();
+    }
+    @org.junit.Test
+    public void testMaxPlayerCountCheck(){
+        ComputerPlayer[] players = new ComputerPlayer[5];
+        for(int i=0;i<players.length;i++){
+            players[i]=new ComputerPlayer("mark");
+        }
+        DominoGame dg = new DominoGame(players);
+        dg.start();
+    }
+    @org.junit.Test
+    public void testGameWithMaxPlayerCount(){
+        ComputerPlayer[] players = new ComputerPlayer[4];
+        for(int i=0;i<players.length;i++){
+            players[i]=new ComputerPlayer("mark" + i);
+        }
+        DominoGame dg = new DominoGame(players);
+        dg.start();
+    }
+
 }
