@@ -40,15 +40,19 @@ public abstract class Player {
         }
         return returnDomino;
     }
-    public abstract Sides getSideToAddTo(Domino toAdd, Domino gameStone);
-    public void addDomino(Domino domino){
-        dominoes.add(domino);
-    }
-    public abstract Domino getNextStone(Domino gameStone);
     public boolean isOutOfDominoes(){
         return dominoes.size()<1;
     }
     public String getDominoString(){
-        return "[" +peekDominoes().stream().map(d->d.toString()).reduce((s1,s2)->s1+s2).orElseGet(String::new) + "]";
+        return "[" +peekDominoes().stream().map(d->d.toString()).reduce((s1,s2)->s1+s2).orElse("") + "]";
     }
+    public void addDomino(Domino domino){
+        dominoes.add(domino);
+    }
+
+
+    public abstract Sides getSideToAddTo(Domino toAdd, Domino gameStone);
+
+    public abstract Domino getNextStone(Domino gameStone);
+
 }

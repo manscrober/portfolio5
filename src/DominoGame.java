@@ -20,29 +20,38 @@ public class DominoGame {
     public void start(){
         dominoHeap = new DominoHeap(dominoPool.provideShuffledDominoHeap());
         if(dominoHeap.getSize()>NUMBER_OF_STONES_PER_PLAYER*players.length) {
-            Stream.of(players).forEach(p -> p.setDominoes(dominoHeap.pickDominoes(NUMBER_OF_STONES_PER_PLAYER)));
-            gameStone = dominoHeap.pickDominoes(1).get(0);
-
-            boolean someoneWon=false;
-            while (playersStalling <= players.length && !someoneWon) {
-
-                for(int i=0;i<players.length&&!someoneWon;i++) {
-                    if (!players[i].isOutOfDominoes()) {
-                        playRound(players[i]);
-                    }
-                    if (players[i].isOutOfDominoes()) {
-
-                        someoneWon=true;
-                    }
-                }
-            }
-            calculatePlayerScores();
-            finishGame();
+            playMatch();
         }
     }
 
+    private void playMatch() {
+        Stream.of(players).forEach(p -> p.setDominoes(dominoHeap.pickDominoes(NUMBER_OF_STONES_PER_PLAYER)));
+        gameStone = dominoHeap.pickDominoes(1).get(0);
 
-    private void playRound(Player player){
+        boolean someoneWon=false;
+        while (playersStalling <= players.length && !someoneWon) {
+            someoneWon = playRound();
+        }
+        calculatePlayerScores();
+        finishGame();
+    }
+
+    private boolean playRound() {
+        boolean someoneWon=false;
+        for(int i=0;i<players.length&&!someoneWon;i++) {
+            if (!players[i].isOutOfDominoes()) {
+                playMove(players[i]);
+            }
+            if (players[i].isOutOfDominoes()) {
+
+                someoneWon=true;
+            }
+        }
+        return someoneWon;
+    }
+
+
+    private void playMove(Player player){
         System.out.println("Anlegemöglickeit:"+gameStone);
         Domino addedDomino = player.getNextStone(gameStone);
         if(addedDomino==null){
