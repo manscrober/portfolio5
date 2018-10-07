@@ -94,6 +94,8 @@ public class DominoGame {
         int anotherRound =  userDialog.getUserInput("Weitere Runde?", "Nein","Ja");
         if(anotherRound==1){
             start();
+        }else{
+            System.out.println("Tschüß");
         }
     }
 }
